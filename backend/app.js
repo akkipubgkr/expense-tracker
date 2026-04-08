@@ -7,21 +7,23 @@ const expenseRoutes = require('./routes/expense');
 
 const app = express();
 
-// ✅ MongoDB Connection
+// MongoDB Connection
 mongoose.connect(
-  'mongodb+srv://akkipubgkr_db_user:' + process.env.MONGO_ATLAS_PW + '@cluster0.rxabfjf.mongodb.net/expenseTracker?retryWrites=true&w=majority'
+  "mongodb+srv://akkipubgkr_db_user:" +
+  process.env.MONGO_ATLAS_PW +
+  "@cluster0.rxabfjf.mongodb.net/expenseTracker?retryWrites=true&w=majority"
 )
 .then(() => {
   console.log("✅ Connected to database");
 })
 .catch((error) => {
-  console.log("❌ Not able to connect to database:", error);
+  console.log("❌ Database connection failed:", error);
 });
 
-// ✅ Middleware
+// Middleware
 app.use(bodyParser.json());
 
-// ✅ CORS Fix
+// CORS Fix
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -35,9 +37,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Routes
+// Routes
 app.use('/v1/api', expenseRoutes);
-app.use('/v1/api/user', userRoutes);
+app.use('/v1/api/USER', userRoutes);
 
-// ✅ Export App
+// Root test route
+app.get("/", (req, res) => {
+  res.send("🚀 Backend is running successfully");
+});
+
 module.exports = app;

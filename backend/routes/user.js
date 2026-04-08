@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+
 // ================= SIGNUP =================
 router.post("/signup", async (req, res) => {
   try {
@@ -21,7 +22,7 @@ router.post("/signup", async (req, res) => {
     // Hash password
     const hash = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Create new user
     const user = new UserModel({
       name,
       username,
@@ -102,6 +103,7 @@ router.post("/login", async (req, res) => {
     });
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({
       message: "Login failed",
       error: err.message
