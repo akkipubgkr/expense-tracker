@@ -7,12 +7,9 @@ const expenseRoutes = require('./routes/expense');
 
 const app = express();
 
-// MongoDB Connection
-mongoose.connect(
-  "mongodb+srv://akkipubgkr_db_user:" +
-  process.env.MONGO_ATLAS_PW +
-  "@cluster0.rxabfjf.mongodb.net/expenseTracker?retryWrites=true&w=majority"
-)
+
+// ================= MONGODB CONNECTION (FIXED) =================
+mongoose.connect(process.env.MONGO_URL)
 .then(() => {
   console.log("✅ Connected to database");
 })
@@ -20,10 +17,12 @@ mongoose.connect(
   console.log("❌ Database connection failed:", error);
 });
 
-// Middleware
+
+// ================= MIDDLEWARE =================
 app.use(bodyParser.json());
 
-// CORS Fix
+
+// ================= CORS FIX =================
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -37,13 +36,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-app.use('/v1/api', expenseRoutes);
-app.use('/v1/api/USER', userRoutes);
 
-// Root test route
+// ================= ROUTES =================
+app.use('/v1/api', expenseRoutes);
+app.use('/v1/api', userRoutes);   // 🔥 FIXED (remove /USER here)
+
+
+// ================= ROOT ROUTE =================
 app.get("/", (req, res) => {
   res.send("🚀 Backend is running successfully");
 });
+
 
 module.exports = app;
