@@ -10,7 +10,6 @@ router.post("/signup", async (req, res) => {
   try {
     const { name, username, gmail, password, userFirstSignUp, category } = req.body;
 
-    // Check if user already exists
     const existingUser = await UserModel.findOne({ gmail });
     if (existingUser) {
       return res.status(400).json({
@@ -19,10 +18,8 @@ router.post("/signup", async (req, res) => {
       });
     }
 
-    // Hash password
     const hash = await bcrypt.hash(password, 10);
 
-    // Create new user
     const user = new UserModel({
       name,
       username,
@@ -34,7 +31,6 @@ router.post("/signup", async (req, res) => {
 
     const result = await user.save();
 
-    // Generate token
     const token = jwt.sign(
       { gmail: result.gmail, userId: result._id },
       process.env.JWT_KEY || "default_secret",
@@ -112,7 +108,26 @@ router.post("/login", async (req, res) => {
 });
 
 
-// ================= TEST ROUTE (for browser) =================
+// ================= GET USER (🔥 IMPORTANT FIX) =================
+router.get("/USER", async (req, res) => {
+  try {
+    const user = await UserModel.findOne(); // first user
+
+    res.status(200).json({
+      message: "User fetched successfully",
+      user: user
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching user",
+      error: error.message
+    });
+  }
+});
+
+
+// ================= TEST ROUTE =================
 router.get("/", (req, res) => {
   res.send("User API working ✅");
 });
